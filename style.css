@@ -1,0 +1,287 @@
+/* ==========================================================================
+   iziLivraison — Système de Design Signal Brutaliste (Preset C)
+   Palette : Papier #E8E4DD, Rouge Signal #E63B2E, Fond #F5F3EE, Noir #111111
+   Typographie : Space Grotesk, DM Serif Display, Space Mono
+   ========================================================================== */
+
+:root {
+  --color-paper: #E8E4DD;
+  --color-signal: #E63B2E;
+  --color-signal-hover: #CC2F23;
+  --color-bg: #F5F3EE;
+  --color-ink: #111111;
+  --color-surface-dark: #18181B;
+  --color-border-light: rgba(17, 17, 17, 0.08);
+  --color-border-dark: rgba(232, 228, 221, 0.12);
+
+  --font-heading: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-dramatic: 'DM Serif Display', Georgia, serif;
+  --font-mono: 'Space Mono', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-heading);
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  overflow-x: hidden;
+  position: relative;
+  background-color: var(--color-bg);
+}
+
+/* ==========================================================================
+   Texture Visuelle : Overlay de Bruit CSS Global (Filtre feTurbulence 0.05)
+   ========================================================================== */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Polices & Classes Utilitaires */
+.font-heading {
+  font-family: var(--font-heading);
+  letter-spacing: -0.025em;
+}
+
+.font-dramatic {
+  font-family: var(--font-dramatic);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.bg-surface {
+  background-color: var(--color-bg);
+}
+
+.bg-signal {
+  background-color: var(--color-signal);
+}
+
+.text-signal {
+  color: var(--color-signal);
+}
+
+.bg-paper {
+  background-color: var(--color-paper);
+}
+
+.text-paper {
+  color: var(--color-paper);
+}
+
+.bg-ink {
+  background-color: var(--color-ink);
+}
+
+.text-ink {
+  color: var(--color-ink);
+}
+
+/* ==========================================================================
+   Micro-Interactions : Boutons Magnétiques & Glissement de Fond
+   ========================================================================== */
+.btn-magnetic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  transition: transform 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.28s ease;
+  will-change: transform;
+}
+
+.btn-magnetic:hover {
+  transform: scale(1.03);
+}
+
+.btn-magnetic:active {
+  transform: scale(0.98);
+}
+
+.btn-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 1;
+}
+
+.btn-magnetic:hover .btn-bg {
+  transform: translateY(0);
+}
+
+/* Effet Lift pour liens interactifs */
+.nav-link {
+  display: inline-block;
+  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), color 0.2s ease;
+}
+
+.nav-link:hover {
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   A. Navbar Morphing : "L'Île Flottante"
+   ========================================================================== */
+.nav-pill.scrolled {
+  background-color: rgba(245, 243, 238, 0.92);
+  border-color: rgba(17, 17, 17, 0.12);
+  color: var(--color-ink);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.15);
+}
+
+.nav-pill.scrolled .nav-link {
+  color: rgba(17, 17, 17, 0.75);
+}
+
+.nav-pill.scrolled .nav-link:hover {
+  color: var(--color-ink);
+}
+
+.nav-pill.scrolled .font-mono.text-paper\/60 {
+  color: rgba(17, 17, 17, 0.5);
+}
+
+/* ==========================================================================
+   C. Fonctionnalités : Mélangeur Diagnostique (Cartes 3D Rebond Élastique)
+   ========================================================================== */
+.diagnostic-deck {
+  perspective: 1000px;
+}
+
+.deck-card {
+  transition: all 0.75s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center center;
+}
+
+.deck-card-0 {
+  z-index: 30;
+  transform: translateY(0px) scale(1);
+  opacity: 1;
+}
+
+.deck-card-1 {
+  z-index: 20;
+  transform: translateY(-16px) scale(0.94);
+  opacity: 0.85;
+}
+
+.deck-card-2 {
+  z-index: 10;
+  transform: translateY(-32px) scale(0.88);
+  opacity: 0.65;
+}
+
+/* Curseur clignotant machine à écrire */
+.cursor-blink {
+  animation: blink 0.9s infinite step-start;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* ==========================================================================
+   Grille Planificateur & Curseur Virtuel
+   ========================================================================== */
+.day-cell {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.day-cell.active-slot {
+  background-color: var(--color-signal) !important;
+  color: #FFFFFF !important;
+  border-color: var(--color-signal) !important;
+  transform: scale(0.95);
+  box-shadow: 0 4px 12px rgba(230, 59, 46, 0.35);
+}
+
+#plannerSaveBtn.active-btn {
+  background-color: var(--color-signal) !important;
+  color: #FFFFFF !important;
+  transform: scale(1.05);
+}
+
+/* ==========================================================================
+   E. Protocole : Animations SVG & Canvas
+   ========================================================================== */
+/* Grille Laser de balayage */
+.matrix-grid {
+  background-size: 24px 24px;
+  background-image: 
+    linear-gradient(to right, rgba(232, 228, 221, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(232, 228, 221, 0.15) 1px, transparent 1px);
+}
+
+.laser-scanner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #E63B2E, #FFFFFF, #E63B2E, transparent);
+  box-shadow: 0 0 16px 2px #E63B2E;
+  animation: laserScan 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes laserScan {
+  0% { top: 10%; opacity: 0.6; }
+  100% { top: 90%; opacity: 1; }
+}
+
+/* Forme d'onde ECG Pulsante */
+.ecg-line {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: ecgDash 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes ecgDash {
+  0% { stroke-dashoffset: 600; opacity: 0.2; }
+  40% { stroke-dashoffset: 0; opacity: 1; }
+  80% { stroke-dashoffset: -600; opacity: 1; }
+  100% { stroke-dashoffset: -600; opacity: 0.2; }
+}
+
+/* ==========================================================================
+   Tarification : Hover & Cartes
+   ========================================================================== */
+.pricing-card {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.18);
+}
+
+/* ==========================================================================
+   Responsive Utilities & Layout Helpers
+   ========================================================================== */
+@media (max-width: 640px) {
+  .hero-stagger h1 {
+    font-size: 2.25rem;
+  }
+}

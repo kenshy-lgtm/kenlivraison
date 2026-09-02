@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iziLivraison | Signal Brutaliste — Livraison Express 45 Min Yaoundé</title>
+  <meta name="description" content="iziLivraison : instrument logistique urbain à Yaoundé. Livraison express point-à-point en 45 minutes chrono, télémétrie GPS satellite et validation chiffrée.">
+
+  <!-- Polices Google Fonts : Preset C (Space Grotesk, DM Serif Display, Space Mono) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            paper: '#E8E4DD',
+            signal: '#E63B2E',
+            surface: '#F5F3EE',
+            ink: '#111111',
+          },
+          fontFamily: {
+            heading: ['"Space Grotesk"', 'sans-serif'],
+            dramatic: ['"DM Serif Display"', 'serif'],
+            mono: ['"Space Mono"', 'monospace'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons via CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- GSAP 3 & ScrollTrigger via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Feuille de style personnalisée Signal Brutaliste -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-surface text-ink antialiased selection:bg-signal selection:text-white overflow-x-hidden">
+
+  <!-- Overlay de bruit CSS global (Filtre SVG feTurbulence) -->
+  <div class="noise-overlay" aria-hidden="true"></div>
+
+  <!-- A. NAVBAR — "L'Île Flottante" -->
+  <header class="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-5xl transition-all duration-500 ease-out" id="floatingNav">
+    <div class="nav-pill flex items-center justify-between px-5 sm:px-7 py-3.5 rounded-[2.5rem] border border-white/20 bg-black/40 backdrop-blur-xl text-paper transition-all duration-300 shadow-2xl">
+      <!-- Logo -->
+      <a href="#hero" class="flex items-center gap-3 group">
+        <div class="w-2.5 h-2.5 rounded-full bg-signal shadow-[0_0_12px_#E63B2E] animate-pulse"></div>
+        <div class="flex flex-col">
+          <span class="font-heading font-extrabold tracking-tighter text-lg leading-tight uppercase group-hover:text-signal transition-colors">
+            iziLivraison<span class="text-signal text-xs font-mono ml-1 font-normal">SYS.237</span>
+          </span>
+          <span class="font-mono text-[9px] uppercase tracking-widest text-paper/60">Yaoundé Express</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <nav class="hidden md:flex items-center gap-7 font-heading text-xs font-semibold uppercase tracking-wider">
+        <a href="#fonctionnalites" class="nav-link text-paper/80 hover:text-white transition-all py-1">[01] Télémétrie</a>
+        <a href="#manifeste" class="nav-link text-paper/80 hover:text-white transition-all py-1">[02] Manifeste</a>
+        <a href="#protocole" class="nav-link text-paper/80 hover:text-white transition-all py-1">[03] Protocole</a>
+        <a href="#tarifs" class="nav-link text-paper/80 hover:text-white transition-all py-1">[04] Tarifs</a>
+      </nav>
+
+      <!-- CTA Button -->
+      <div class="flex items-center gap-3">
+        <button onclick="openOrderModal()" class="btn-magnetic relative overflow-hidden px-5 py-2.5 rounded-[2rem] bg-signal text-white font-heading font-bold text-xs uppercase tracking-wider shadow-lg flex items-center gap-2 group">
+          <span class="btn-bg bg-[#CC2F23]"></span>
+          <span class="relative z-10 flex items-center gap-1.5">
+            <span>Commander</span>
+            <span class="font-mono text-[10px] opacity-90 hidden sm:inline">[45min]</span>
+            <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
+          </span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- B. SECTION HERO — "Le Plan d'Ouverture" -->
+  <section id="hero" class="relative min-h-[100dvh] w-full flex flex-col justify-end pb-16 pt-32 px-6 sm:px-12 lg:px-20 overflow-hidden bg-black text-white">
+    <!-- Image de fond brutaliste plein cadre avec overlay lourd -->
+    <div class="absolute inset-0 z-0">
+      <img 
+        src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=2400&q=85" 
+        alt="Architecture Brutaliste Industrielle" 
+        class="w-full h-full object-cover object-center scale-105 filter grayscale contrast-125 brightness-[0.55] transform transition-transform duration-1000"
+        id="heroBgImg"
+      >
+      <!-- Gradient overlay lourd : primaire-vers-noir -->
+      <div class="absolute inset-0 bg-gradient-to-t from-[#111111] via-[#111111]/80 to-black/50"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent"></div>
+    </div>
+
+    <!-- HUD Grid Line Accent -->
+    <div class="absolute top-28 right-8 hidden lg:flex flex-col items-end text-right font-mono text-[11px] text-paper/40 space-y-1 z-10 pointer-events-none">
+      <div class="flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+        <span class="text-emerald-400 font-bold">RESEAU_ACTIF_100%</span>
+      </div>
+      <div>COORD: 3.8480° N, 11.5021° E</div>
+      <div>HUB: BASTOS // SECTEUR 01</div>
+      <div>CYCLE_MOYEN: 38 MIN 22 SEC</div>
+    </div>
+
+    <!-- Hero Content (Tiers inférieur gauche) -->
+    <div class="relative z-10 max-w-4xl space-y-8">
+      
+      <!-- Telemetry Badge -->
+      <div class="hero-stagger inline-flex items-center gap-3 px-4 py-1.5 rounded-[2rem] bg-white/10 backdrop-blur-md border border-white/15 text-paper font-mono text-xs uppercase tracking-widest">
+        <span class="w-2 h-2 rounded-full bg-signal shadow-[0_0_8px_#E63B2E]"></span>
+        <span>// PROTOCOLE RAPIDE YAOUNDÉ — DISPATCH IMMÉDIAT</span>
+      </div>
+
+      <!-- Hero Title : Pattern Preset C [Verbe direct] la (Sans Gras) / [Nom système]. (Serif Italique Massif) -->
+      <div class="hero-stagger space-y-1 sm:space-y-2">
+        <h1 class="font-heading font-extrabold text-3xl sm:text-5xl lg:text-7xl uppercase tracking-tighter text-paper leading-[1.05]">
+          Propulsez la
+        </h1>
+        <div class="font-dramatic italic text-6xl sm:text-8xl lg:text-[7.5rem] leading-[0.9] text-[#F5F3EE] drop-shadow-2xl">
+          Vitesse Urbaine<span class="text-signal not-italic font-mono text-5xl sm:text-7xl lg:text-8xl">.</span>
+        </div>
+      </div>
+
+      <!-- Hero Subtitle -->
+      <p class="hero-stagger font-heading text-base sm:text-lg lg:text-xl text-paper/80 font-normal max-w-2xl leading-relaxed">
+        Le réseau de coursiers le plus discipliné de Yaoundé. Chaque colis acheminé en <strong class="text-signal font-semibold">45 minutes chrono</strong> avec télémétrie GPS continue, contrôle de trajectoire et remise scellée.
+      </p>
+
+      <!-- CTA Group -->
+      <div class="hero-stagger flex flex-wrap items-center gap-4 pt-2">
+        <button onclick="openOrderModal()" class="btn-magnetic relative overflow-hidden px-8 py-4 rounded-[2.5rem] bg-signal text-white font-heading font-bold text-sm uppercase tracking-wider shadow-2xl flex items-center gap-3 group">
+          <span class="btn-bg bg-[#CC2F23]"></span>
+          <span class="relative z-10 flex items-center gap-2.5">
+            <span>Commander une livraison maintenant</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+          </span>
+        </button>
+
+        <div class="flex items-center gap-3 px-5 py-3.5 rounded-[2.5rem] bg-white/5 backdrop-blur-md border border-white/10 text-paper font-mono text-xs">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+          <span>24 coursiers en patrouille à Yaoundé</span>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Ribbon -->
+      <div class="hero-stagger grid grid-cols-3 gap-4 pt-8 border-t border-white/15 max-w-xl font-mono text-xs">
+        <div>
+          <div class="text-paper/50 text-[10px] uppercase">Garantie Chrono</div>
+          <div class="text-lg sm:text-2xl font-bold text-paper font-heading">45 Min</div>
+        </div>
+        <div>
+          <div class="text-paper/50 text-[10px] uppercase">Précision Dispatch</div>
+          <div class="text-lg sm:text-2xl font-bold text-signal font-heading">&lt; 3 Min</div>
+        </div>
+        <div>
+          <div class="text-paper/50 text-[10px] uppercase">Sécurisation Remise</div>
+          <div class="text-lg sm:text-2xl font-bold text-paper font-heading">Code OTP</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-6 right-8 sm:right-16 z-10 hidden sm:flex items-center gap-3 text-paper/40 font-mono text-xs uppercase tracking-widest">
+      <span>Scroll pour analyser</span>
+      <div class="w-8 h-px bg-paper/30"></div>
+      <i data-lucide="chevron-down" class="w-4 h-4 animate-bounce"></i>
+    </div>
+  </section>
+
+  <!-- C. SECTION FONCTIONNALITÉS — "Artefacts Fonctionnels Interactifs" -->
+  <section id="fonctionnalites" class="py-24 sm:py-32 px-6 sm:px-12 lg:px-20 bg-surface relative z-10">
+    <div class="max-w-7xl mx-auto space-y-16">
+      
+      <!-- Section Header -->
+      <div class="space-y-4 max-w-3xl">
+        <div class="inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-widest text-signal">
+          <span class="w-2 h-2 bg-signal rounded-full"></span>
+          <span>[01] // ARTEFACTS FONCTIONNELS DE CONTRÔLE</span>
+        </div>
+        <h2 class="font-heading font-extrabold text-3xl sm:text-5xl uppercase tracking-tight text-ink">
+          Trois architectures d'exécution directe.
+        </h2>
+        <p class="font-heading text-ink/70 text-base sm:text-lg">
+          Pas de promesses marketing creuses. Voici les micro-systèmes logiciels et opérationnels qui propulsent chaque colis dans Yaoundé.
+        </p>
+      </div>
+
+      <!-- 3 Functional Interactive Cards Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+        
+        <!-- CARTE 1 — "MÉLANGEUR DIAGNOSTIQUE" (Cycle vertical 3s, rebond élastique) -->
+        <div class="feature-card bg-[#F5F3EE] border border-black/10 rounded-[2.5rem] p-7 sm:p-9 shadow-xl flex flex-col justify-between relative overflow-hidden">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-[11px] font-bold text-signal tracking-widest uppercase">[ARG-01 // SPEED]</span>
+              <span class="px-3 py-1 rounded-[1.5rem] bg-black/5 font-mono text-[10px] text-ink/70">CYCLE AUTO 3.0s</span>
+            </div>
+            <h3 class="font-heading font-bold text-2xl uppercase tracking-tight text-ink">
+              Livraison chrono en 45 min
+            </h3>
+            <p class="font-heading text-sm text-ink/70 leading-relaxed">
+              Algorithme de dispatch prédictif allouant instantanément le coursier idéal selon le trafic et le relief des 7 collines.
+            </p>
+          </div>
+
+          <!-- Mélangeur Diagnostique : 3 cartes empilées qui cyclent -->
+          <div class="diagnostic-deck relative h-52 my-6 w-full flex items-center justify-center">
+            
+            <div class="deck-card deck-card-0 p-4 rounded-[1.8rem] bg-ink text-paper border border-white/10 shadow-2xl absolute w-full transition-all">
+              <div class="flex items-center justify-between text-[11px] font-mono mb-2">
+                <span class="text-signal font-bold">ETAPE_01 // ALLOCATION</span>
+                <span class="text-paper/50">T+00:01:45</span>
+              </div>
+              <div class="font-heading font-bold text-sm uppercase text-paper mb-1">
+                Dispatch automatique &lt; 3 min
+              </div>
+              <p class="font-mono text-[11px] text-paper/70 leading-tight">
+                Triangulation du coursier le plus proche via 12 bornes relais à Bastos, Tsinga & Omnisports.
+              </p>
+            </div>
+
+            <div class="deck-card deck-card-1 p-4 rounded-[1.8rem] bg-paper text-ink border border-black/15 shadow-xl absolute w-full transition-all">
+              <div class="flex items-center justify-between text-[11px] font-mono mb-2">
+                <span class="text-signal font-bold">ETAPE_02 // CONTOURNEMENT</span>
+                <span class="text-ink/50">T+00:18:10</span>
+              </div>
+              <div class="font-heading font-bold text-sm uppercase text-ink mb-1">
+                Trajet optimisé quartier par quartier
+              </div>
+              <p class="font-mono text-[11px] text-ink/70 leading-tight">
+                Évitement proactif des engorgements de Mokolo, Poste Centrale et Carrefour Nlongkak.
+              </p>
+            </div>
+
+            <div class="deck-card deck-card-2 p-4 rounded-[1.8rem] bg-[#E8E4DD] text-ink border border-signal/30 shadow-lg absolute w-full transition-all">
+              <div class="flex items-center justify-between text-[11px] font-mono mb-2">
+                <span class="text-signal font-bold">ETAPE_03 // CLÔTURE</span>
+                <span class="text-ink/50">T+00:41:20</span>
+              </div>
+              <div class="font-heading font-bold text-sm uppercase text-ink mb-1">
+                Chrono garanti 45 min max
+              </div>
+              <p class="font-mono text-[11px] text-ink/70 leading-tight">
+                Remise en main propre scellée contre signature électronique et code de déverrouillage SMS.
+              </p>
+            </div>
+
+          </div>
+
+          <div class="pt-4 border-t border-black/10 flex items-center justify-between font-mono text-[11px] text-ink/60">
+            <span>DISPATCH YAOUNDÉ NORD/SUD</span>
+            <span class="text-signal font-bold">99.4% DANS LES DÉLAIS</span>
+          </div>
+        </div>
+
+        <!-- CARTE 2 — "MACHINE À ÉCRIRE TÉLÉMÉTRIE" (Flux monospace live + point pulsant) -->
+        <div class="feature-card bg-[#111111] text-paper rounded-[2.5rem] p-7 sm:p-9 shadow-2xl flex flex-col justify-between relative overflow-hidden border border-white/10">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-[11px] font-bold text-signal tracking-widest uppercase">[ARG-02 // RADAR]</span>
+              <div class="flex items-center gap-2 px-3 py-1 rounded-[1.5rem] bg-signal/15 border border-signal/30">
+                <span class="w-2 h-2 rounded-full bg-signal animate-ping"></span>
+                <span class="font-mono text-[10px] font-bold text-signal uppercase tracking-wider">Flux en Direct</span>
+              </div>
+            </div>
+            <h3 class="font-heading font-bold text-2xl uppercase tracking-tight text-paper">
+              Suivi GPS en temps réel
+            </h3>
+            <p class="font-heading text-sm text-paper/70 leading-relaxed">
+              Télémétrie satellite de haute précision avec rafraîchissement toutes les 2 secondes sur la carte topographique.
+            </p>
+          </div>
+
+          <!-- Terminal Télémétrie avec machine à écrire -->
+          <div class="telemetry-terminal bg-black/70 rounded-[1.8rem] p-5 my-6 border border-white/10 font-mono text-xs leading-relaxed space-y-2.5 h-52 overflow-hidden flex flex-col justify-end">
+            <div class="text-paper/40 text-[10px] pb-1 border-b border-white/10 flex justify-between">
+              <span>CANAL TÉLÉMÉTRIE SATELLITE</span>
+              <span class="text-signal">EN LIGNE</span>
+            </div>
+            <div id="telemetryTypewriter" class="text-paper/90 space-y-1.5 font-mono text-[11px]">
+              <!-- Rempli dynamiquement par JS caractère par caractère -->
+            </div>
+            <div class="flex items-center gap-1 text-signal font-bold text-[11px]">
+              <span class="text-paper/50">&gt;&gt;</span>
+              <span id="typewriterCurrent">LIAISON_ACTIVE</span>
+              <span class="cursor-blink w-2 h-3.5 bg-signal inline-block align-middle ml-1"></span>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-white/10 flex items-center justify-between font-mono text-[11px] text-paper/60">
+            <span>BALISE GPS MILITAIRE</span>
+            <span class="text-emerald-400 font-bold">LATENCE 18 MS</span>
+          </div>
+        </div>
+
+        <!-- CARTE 3 — "PLANIFICATEUR PROTOCOLE CURSEUR" (Grille L M M J V S D + curseur animé) -->
+        <div class="feature-card bg-[#F5F3EE] border border-black/10 rounded-[2.5rem] p-7 sm:p-9 shadow-xl flex flex-col justify-between relative overflow-hidden">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-[11px] font-bold text-signal tracking-widest uppercase">[ARG-03 // PAIEMENT]</span>
+              <span class="px-3 py-1 rounded-[1.5rem] bg-black/5 font-mono text-[10px] text-ink/70">AUTONOME</span>
+            </div>
+            <h3 class="font-heading font-bold text-2xl uppercase tracking-tight text-ink">
+              Paiement flexible MoMo & Cash
+            </h3>
+            <p class="font-heading text-sm text-ink/70 leading-relaxed">
+              Réglez par MTN MoMo, Orange Money ou en espèces à la livraison. Aucun acompte imposé, clôture instantanée.
+            </p>
+          </div>
+
+          <!-- Grille Planificateur avec curseur SVG interactif animé -->
+          <div class="cursor-planner relative bg-white/70 rounded-[1.8rem] p-5 my-6 border border-black/10 h-52 flex flex-col justify-between overflow-hidden" id="plannerContainer">
+            <div class="flex items-center justify-between font-mono text-[10px] text-ink/50 uppercase">
+              <span>DISPONIBILITÉ DES SLOTS 7J/7</span>
+              <span class="text-signal font-bold">YAOUNDÉ EXPRESS</span>
+            </div>
+
+            <!-- Grille des Jours L M M J V S D -->
+            <div class="grid grid-cols-7 gap-1.5 text-center font-mono text-xs my-auto" id="daysGrid">
+              <div class="day-cell py-2 rounded-xl border border-black/10 bg-black/5 font-bold" data-day="L">L</div>
+              <div class="day-cell py-2 rounded-xl border border-black/10 bg-black/5 font-bold" data-day="M">M</div>
+              <div class="day-cell py-2 rounded-xl border border-black/10 bg-black/5 font-bold" data-day="M2">M</div>
+              <div class="day-cell py-2 rounded-xl border border-black/10 bg-black/5 font-bold day-target" data-day="J">J</div>
+              <div class="day-cell py-2 rounded-xl border border-black/10 bg-black/5 font-bold" data-day="V">V</div>
+              <div class="day-cell py-2 rounded-xl border border-black/10 bg-black/5 font-bold" data-day="S">S</div>
+              <div class="day-cell py-2 rounded-xl border border-black/10 bg-black/5 font-bold" data-day="D">D</div>
+            </div>
+
+            <!-- Bouton Sauvegarder / Confirmer Paiement -->
+            <div class="flex items-center justify-between pt-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-mono text-[9px] font-bold">MTN / ORANGE</span>
+                <span class="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-900 font-mono text-[9px] font-bold">CASH</span>
+              </div>
+              <button id="plannerSaveBtn" class="px-3.5 py-1.5 rounded-[1.5rem] bg-ink text-paper font-heading text-[11px] font-bold uppercase transition-all">
+                Valider Slot
+              </button>
+            </div>
+
+            <!-- Curseur SVG virtuel animé -->
+            <div id="virtualCursor" class="absolute pointer-events-none z-20 transition-transform duration-700 ease-out" style="top: 80px; left: 20px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-lg">
+                <path d="M5.5 3.5L18.5 10.5L12 12.5L10 19L5.5 3.5Z" fill="#E63B2E" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-black/10 flex items-center justify-between font-mono text-[11px] text-ink/60">
+            <span>RÉCONCILIATION IMMÉDIATE</span>
+            <span class="text-signal font-bold">0% COMMISSION CACHÉE</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- D. SECTION PHILOSOPHIE — "Le Manifeste" (Pleine largeur sombre, SplitText GSAP) -->
+  <section id="manifeste" class="relative py-32 sm:py-44 px-6 sm:px-12 lg:px-20 bg-[#111111] text-paper overflow-hidden">
+    <!-- Texture Parallaxe en fond -->
+    <div class="absolute inset-0 z-0 opacity-15 pointer-events-none">
+      <img 
+        src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=2000&q=80" 
+        alt="Texture Béton Brut" 
+        class="w-full h-full object-cover grayscale contrast-200"
+        id="manifesteTexture"
+      >
+      <div class="absolute inset-0 bg-radial from-transparent to-[#111111]"></div>
+    </div>
+
+    <div class="relative z-10 max-w-5xl mx-auto space-y-12">
+      <!-- Header Badge -->
+      <div class="inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-widest text-signal">
+        <span class="w-2 h-2 bg-signal rounded-full"></span>
+        <span>// MANIFESTE LOGISTIQUE YAOUNDÉ 2026</span>
+      </div>
+
+      <!-- Contrasting Statements (Pattern gemini.md) -->
+      <div class="space-y-10">
+        <!-- Déclaration 1 : Neutre, plus petit -->
+        <div class="manifeste-statement-1 font-heading text-lg sm:text-2xl text-paper/50 max-w-3xl leading-relaxed border-l-2 border-paper/20 pl-6">
+          La plupart des services de livraison à Yaoundé se concentrent sur : <span class="text-paper/80 font-medium">l'attente passive, les excuses d'embouteillages et les créneaux d'arrivée aléatoires.</span>
+        </div>
+
+        <!-- Déclaration 2 : Massif, Serif Italique dramatique, mot-clé en Rouge Signal -->
+        <div class="manifeste-statement-2 font-dramatic italic text-4xl sm:text-6xl lg:text-7xl text-[#F5F3EE] leading-[1.1] tracking-tight">
+          Nous nous concentrons sur : <br class="hidden sm:inline">
+          la <span class="text-signal not-italic font-heading font-extrabold uppercase tracking-tight">précision chirurgicale</span>, l'engagement chrono 45 minutes et la traçabilité absolue.
+        </div>
+      </div>
+
+      <!-- Sub-Manifesto Points -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12 border-t border-white/10 font-heading text-sm text-paper/70">
+        <div class="space-y-2">
+          <div class="font-mono text-signal text-xs font-bold">[01 / DISCIPLINE]</div>
+          <p>Chaque minute compte. Nos coursiers n'improvisent pas : les plans de circulation sont calculés dynamiquement.</p>
+        </div>
+        <div class="space-y-2">
+          <div class="font-mono text-signal text-xs font-bold">[02 / TRANSPARENCE]</div>
+          <p>Le client visualise son colis en continu sur la carte. Si nous dépassons 45 minutes, la course est compensée.</p>
+        </div>
+        <div class="space-y-2">
+          <div class="font-mono text-signal text-xs font-bold">[03 / INTÉGRITÉ]</div>
+          <p>Remise sous scellé inviolable. Le colis n'est confié qu'après validation du code secret à usage unique.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- E. SECTION PROTOCOLE — "Archive Empilée Sticky" (3 cartes plein écran avec animations canvas/SVG) -->
+  <section id="protocole" class="py-24 sm:py-32 px-6 sm:px-12 lg:px-20 bg-surface relative z-10">
+    <div class="max-w-6xl mx-auto space-y-12">
+      
+      <!-- Section Header -->
+      <div class="space-y-4 max-w-3xl">
+        <div class="inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-widest text-signal">
+          <span class="w-2 h-2 bg-signal rounded-full"></span>
+          <span>[03] // PROTOCOLE OPÉRATIONNEL EN 3 ÉTAPES</span>
+        </div>
+        <h2 class="font-heading font-extrabold text-3xl sm:text-5xl uppercase tracking-tight text-ink">
+          L'Archive Empilée du Déploiement.
+        </h2>
+        <p class="font-heading text-ink/70 text-base sm:text-lg">
+          Découvrez la séquence chronologique d'une commande iziLivraison.
+        </p>
+      </div>
+
+      <!-- Sticky Stacking Container -->
+      <div class="sticky-stack-container relative space-y-12 lg:space-y-16">
+        
+        <!-- PROTOCOLE 01 : Radar Dispatch (Motif géométrique en rotation lente) -->
+        <div class="protocol-card sticky top-28 bg-[#111111] text-paper rounded-[3rem] p-8 sm:p-12 lg:p-16 border border-white/10 shadow-2xl transition-all duration-500 min-h-[520px] flex flex-col justify-between overflow-hidden">
+          <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-white/10">
+            <div class="space-y-2">
+              <span class="font-mono text-signal text-xs font-bold uppercase tracking-widest">// ÉTAPE 01 / 03</span>
+              <h3 class="font-heading font-extrabold text-2xl sm:text-4xl uppercase tracking-tight text-paper">
+                Ordre de Mission &amp; Triangulation Instantanée
+              </h3>
+            </div>
+            <span class="px-4 py-1.5 rounded-[2rem] bg-signal/20 border border-signal/40 text-signal font-mono text-xs font-bold uppercase">
+              TÉLÉMÉTRIE INITIALE
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center my-8">
+            <div class="space-y-4 font-heading text-paper/80 text-base sm:text-lg leading-relaxed">
+              <p>
+                Dès validation de votre demande, le serveur iziLivraison émet une onde de dispatch vers tous les coursiers patrouillant dans un rayon de 2,5 km.
+              </p>
+              <p class="font-mono text-xs text-paper/60 leading-normal">
+                Prise en charge moyenne : <strong>2 minutes 45 secondes</strong>. L'expéditeur reçoit immédiatement le lien de télémétrie en direct.
+              </p>
+            </div>
+
+            <!-- Animation Unique 1 : Radar Géométrique Concentrique (Canvas / SVG) -->
+            <div class="relative w-full h-56 sm:h-64 rounded-[2rem] bg-black/60 border border-white/10 flex items-center justify-center overflow-hidden">
+              <canvas id="radarCanvas" width="300" height="240" class="w-full h-full"></canvas>
+              <div class="absolute bottom-3 left-4 font-mono text-[10px] text-signal font-bold uppercase">
+                RADAR YAOUNDÉ // 3 NOEUDS CONNECTÉS
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-6 border-t border-white/10 flex items-center justify-between font-mono text-xs text-paper/50">
+            <span>DISPATCH SYSTÈME : AUTOMATISÉ</span>
+            <span class="text-paper font-bold">TEMPS D'ALLOUAGE : &lt; 180S</span>
+          </div>
+        </div>
+
+        <!-- PROTOCOLE 02 : Ligne Laser de Balayage sur Grille de Points -->
+        <div class="protocol-card sticky top-32 bg-[#E8E4DD] text-ink rounded-[3rem] p-8 sm:p-12 lg:p-16 border border-black/15 shadow-2xl transition-all duration-500 min-h-[520px] flex flex-col justify-between overflow-hidden">
+          <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-black/10">
+            <div class="space-y-2">
+              <span class="font-mono text-signal text-xs font-bold uppercase tracking-widest">// ÉTAPE 02 / 03</span>
+              <h3 class="font-heading font-extrabold text-2xl sm:text-4xl uppercase tracking-tight text-ink">
+                Acheminement Vectoriel Haute Cadence
+              </h3>
+            </div>
+            <span class="px-4 py-1.5 rounded-[2rem] bg-black/10 border border-black/20 text-ink font-mono text-xs font-bold uppercase">
+              TRANSIT ACCÉLÉRÉ
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center my-8">
+            <div class="space-y-4 font-heading text-ink/80 text-base sm:text-lg leading-relaxed">
+              <p>
+                Le coursier navigue selon un corridor de transit pré-établi évitant les axes saturés de Yaoundé (Mokolo, Carrefour Vogt, Poste Centrale).
+              </p>
+              <p class="font-mono text-xs text-ink/60 leading-normal">
+                Le colis est protégé dans un caisson isotherme étanche et scellé. Balise GPS active avec signal d'intégrité transmis en continu.
+              </p>
+            </div>
+
+            <!-- Animation Unique 2 : Ligne Laser Horizontale sur Grille Matricielle -->
+            <div class="relative w-full h-56 sm:h-64 rounded-[2rem] bg-[#111111] border border-black/20 flex items-center justify-center overflow-hidden">
+              <div class="absolute inset-0 matrix-grid opacity-30"></div>
+              <div class="laser-scanner"></div>
+              <div class="z-10 text-center font-mono text-xs space-y-2 text-paper">
+                <div class="text-signal font-bold tracking-widest">BALAYAGE TOPOGRAPHIQUE ACTIF</div>
+                <div class="text-paper/60 text-[11px]">CORRIDOR N-S DÉGAGÉ // LATENCE 14MS</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-6 border-t border-black/10 flex items-center justify-between font-mono text-xs text-ink/60">
+            <span>TRAJECTOIRE CALCULÉE</span>
+            <span class="text-signal font-bold">VITESSE MOYENNE URBAINE : 42 KM/H</span>
+          </div>
+        </div>
+
+        <!-- PROTOCOLE 03 : Forme d'Onde Pulsante ECG / Validation OTP -->
+        <div class="protocol-card sticky top-36 bg-[#F5F3EE] text-ink rounded-[3rem] p-8 sm:p-12 lg:p-16 border border-signal/40 shadow-2xl transition-all duration-500 min-h-[520px] flex flex-col justify-between overflow-hidden">
+          <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-black/10">
+            <div class="space-y-2">
+              <span class="font-mono text-signal text-xs font-bold uppercase tracking-widest">// ÉTAPE 03 / 03</span>
+              <h3 class="font-heading font-extrabold text-2xl sm:text-4xl uppercase tracking-tight text-ink">
+                Remise Sécurisée &amp; Clôture Cryptographique
+              </h3>
+            </div>
+            <span class="px-4 py-1.5 rounded-[2rem] bg-signal text-white font-mono text-xs font-bold uppercase">
+              CONFIRMATION IMMÉDIATE
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center my-8">
+            <div class="space-y-4 font-heading text-ink/80 text-base sm:text-lg leading-relaxed">
+              <p>
+                Arrivée sur les lieux à T+38 minutes. Le destinataire fournit son code secret OTP reçu par SMS pour autoriser le déverrouillage du scellé.
+              </p>
+              <p class="font-mono text-xs text-ink/60 leading-normal">
+                Paiement instantané par Mobile Money (Orange / MTN) ou espèces. Récépissé électronique certifié envoyé aux deux parties.
+              </p>
+            </div>
+
+            <!-- Animation Unique 3 : Forme d'Onde Pulsante SVG (Style ECG) -->
+            <div class="relative w-full h-56 sm:h-64 rounded-[2rem] bg-black text-paper border border-black/20 flex flex-col items-center justify-center p-6 overflow-hidden">
+              <svg class="w-full h-24 stroke-signal fill-none" viewBox="0 0 500 100">
+                <path class="ecg-line" d="M 0 50 L 150 50 L 170 20 L 190 85 L 210 10 L 230 75 L 250 50 L 320 50 L 340 30 L 360 70 L 380 50 L 500 50" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div class="font-mono text-xs text-paper/80 flex items-center gap-3 mt-4">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>OTP HANDSHAKE #882-941 VALIDÉ</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-6 border-t border-black/10 flex items-center justify-between font-mono text-xs text-ink/60">
+            <span>RÉCEPTION CONFORME</span>
+            <span class="text-ink font-bold">GARANTIE 100% EXÉCUTÉE</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- F. SECTION TARIFICATION / ADHÉSION (Grille à 3 niveaux, milieu en avant) -->
+  <section id="tarifs" class="py-24 sm:py-32 px-6 sm:px-12 lg:px-20 bg-surface relative z-10 border-t border-black/10">
+    <div class="max-w-7xl mx-auto space-y-16">
+      
+      <!-- Section Header -->
+      <div class="text-center space-y-4 max-w-3xl mx-auto">
+        <div class="inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-widest text-signal">
+          <span class="w-2 h-2 bg-signal rounded-full"></span>
+          <span>[04] // GRILLE TARIFAIRE TRANSPARENTE</span>
+        </div>
+        <h2 class="font-heading font-extrabold text-3xl sm:text-5xl uppercase tracking-tight text-ink">
+          Tarifs fixes. Zéro mauvaise surprise.
+        </h2>
+        <p class="font-heading text-ink/70 text-base sm:text-lg">
+          Que vous ayez un colis urgent ponctuel ou des expéditions quotidiennes, choisissez la formule calibrée pour votre cadence.
+        </p>
+      </div>
+
+      <!-- Pricing Matrix (3 Niveaux) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto">
+        
+        <!-- TIER 1 : ESSENTIEL / COURSE EXPRESS -->
+        <div class="pricing-card bg-[#F5F3EE] rounded-[2.5rem] p-8 sm:p-10 border border-black/10 shadow-lg flex flex-col justify-between">
+          <div class="space-y-6">
+            <div>
+              <span class="font-mono text-xs font-bold text-ink/60 uppercase">// PONCTUEL</span>
+              <h3 class="font-heading font-extrabold text-2xl uppercase text-ink mt-1">Course Flash</h3>
+              <p class="font-heading text-xs text-ink/70 mt-1">Pour les particuliers et envois d'urgence immédiats.</p>
+            </div>
+
+            <div class="py-4 border-y border-black/10">
+              <div class="flex items-baseline gap-1">
+                <span class="font-heading font-extrabold text-4xl sm:text-5xl text-ink">2 500</span>
+                <span class="font-mono text-xs uppercase text-ink/60">FCFA / course</span>
+              </div>
+              <span class="font-mono text-[11px] text-signal font-semibold">Garantie 45 min chrono incluse</span>
+            </div>
+
+            <ul class="space-y-3 font-heading text-sm text-ink/80">
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-signal"></i>
+                <span>Jusqu'à 5 kg de charge</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-signal"></i>
+                <span>Suivi GPS en direct par lien SMS</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-signal"></i>
+                <span>Paiement MoMo / Cash à l'arrivée</span>
+              </li>
+              <li class="flex items-center gap-2.5 text-ink/40">
+                <i data-lucide="minus" class="w-4 h-4"></i>
+                <span>Support prioritaire 24/7</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="pt-8">
+            <button onclick="openOrderModal('flash')" class="w-full btn-magnetic relative overflow-hidden py-3.5 rounded-[2rem] bg-ink text-paper font-heading font-bold text-xs uppercase tracking-wider text-center group">
+              <span class="btn-bg bg-black"></span>
+              <span class="relative z-10">Commander une course</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- TIER 2 : PERFORMANCE / PASS PRO YAOUNDÉ (Milieu ressort, ring accent, badge) -->
+        <div class="pricing-card relative bg-[#111111] text-paper rounded-[2.5rem] p-8 sm:p-10 border-2 border-signal shadow-2xl flex flex-col justify-between lg:-translate-y-4">
+          <!-- Badge Recommandé -->
+          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-[1.5rem] bg-signal text-white font-mono text-[10px] font-bold uppercase tracking-widest shadow-md">
+            RECOMMANDE PRO &amp; COMMERCE
+          </div>
+
+          <div class="space-y-6">
+            <div>
+              <span class="font-mono text-xs font-bold text-signal uppercase">// PERFORMANCE</span>
+              <h3 class="font-heading font-extrabold text-3xl uppercase text-paper mt-1">Pass Pro Yaoundé</h3>
+              <p class="font-heading text-xs text-paper/70 mt-1">Pour e-commerçants, boutiques et PME dynamiques.</p>
+            </div>
+
+            <div class="py-4 border-y border-white/15">
+              <div class="flex items-baseline gap-1">
+                <span class="font-heading font-extrabold text-4xl sm:text-5xl text-paper">45 000</span>
+                <span class="font-mono text-xs uppercase text-paper/60">FCFA / mois</span>
+              </div>
+              <span class="font-mono text-[11px] text-signal font-semibold">Soit 25 courses incluses (1 800 F/course)</span>
+            </div>
+
+            <ul class="space-y-3 font-heading text-sm text-paper/90">
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-signal"></i>
+                <span>25 courses prioritaires par mois</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-signal"></i>
+                <span>Dispatch prioritaire &lt; 90 secondes</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-signal"></i>
+                <span>Collecte des paiements à la livraison (COD)</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-signal"></i>
+                <span>Support dédié WhatsApp VIP 7j/7</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-signal"></i>
+                <span>Assurance colis jusqu'à 250 000 FCFA</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="pt-8">
+            <button onclick="openOrderModal('pass_pro')" class="w-full btn-magnetic relative overflow-hidden py-4 rounded-[2rem] bg-signal text-white font-heading font-bold text-xs uppercase tracking-wider text-center group shadow-xl">
+              <span class="btn-bg bg-[#CC2F23]"></span>
+              <span class="relative z-10 flex items-center justify-center gap-2">
+                <span>Activer le Pass Pro</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <!-- TIER 3 : ENTREPRISE / FLOTTE DÉDIÉE -->
+        <div class="pricing-card bg-[#F5F3EE] rounded-[2.5rem] p-8 sm:p-10 border border-black/10 shadow-lg flex flex-col justify-between">
+          <div class="space-y-6">
+            <div>
+              <span class="font-mono text-xs font-bold text-ink/60 uppercase">// GRAND VOLUME</span>
+              <h3 class="font-heading font-extrabold text-2xl uppercase text-ink mt-1">Flotte Entreprise</h3>
+              <p class="font-heading text-xs text-ink/70 mt-1">Chaînes de restauration, banques, laboratoires et réseaux.</p>
+            </div>
+
+            <div class="py-4 border-y border-black/10">
+              <div class="flex items-baseline gap-1">
+                <span class="font-heading font-extrabold text-4xl sm:text-5xl text-ink">Sur Devis</span>
+              </div>
+              <span class="font-mono text-[11px] text-ink/60 font-semibold">Volume illimité et SLA contractuel</span>
+            </div>
+
+            <ul class="space-y-3 font-heading text-sm text-ink/80">
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-signal"></i>
+                <span>Coursiers dédiés avec vos couleurs</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-signal"></i>
+                <span>API directe pour votre site e-commerce</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-signal"></i>
+                <span>Rapports mensuels de télémétrie et SLA</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-signal"></i>
+                <span>Facturation fin de mois à 30 jours</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="pt-8">
+            <button onclick="openOrderModal('enterprise')" class="w-full btn-magnetic relative overflow-hidden py-3.5 rounded-[2rem] bg-ink text-paper font-heading font-bold text-xs uppercase tracking-wider text-center group">
+              <span class="btn-bg bg-black"></span>
+              <span class="relative z-10">Demander un audit logistique</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- G. PIED DE PAGE (Fond sombre profond #111111, rounded-t-[4rem], point vert pulsant) -->
+  <footer class="bg-[#111111] text-paper rounded-t-[4rem] pt-20 pb-12 px-6 sm:px-12 lg:px-20 border-t border-white/10 relative z-20">
+    <div class="max-w-7xl mx-auto space-y-16">
+      
+      <!-- Top Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+        
+        <!-- Col 1 & 2 : Brand & Operational Status -->
+        <div class="lg:col-span-2 space-y-6">
+          <div class="flex items-center gap-3">
+            <div class="w-3 h-3 rounded-full bg-signal shadow-[0_0_12px_#E63B2E]"></div>
+            <span class="font-heading font-extrabold text-2xl tracking-tight uppercase text-paper">
+              iziLivraison<span class="text-signal text-sm font-mono ml-1 font-normal">SYS.237</span>
+            </span>
+          </div>
+
+          <p class="font-heading text-sm text-paper/70 max-w-sm leading-relaxed">
+            L'infrastructure logistique urbaine de pointe à Yaoundé. Zéro approximation, dispatch algorithmique et garantie stricte de 45 minutes chrono.
+          </p>
+
+          <!-- Statut Système Opérationnel (Exigence gemini.md) -->
+          <div class="inline-flex items-center gap-3 px-4 py-2 rounded-[2rem] bg-white/5 border border-white/10 font-mono text-xs">
+            <span class="relative flex h-2.5 w-2.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </span>
+            <span class="text-emerald-400 uppercase tracking-widest font-semibold">Système Opérationnel // Latence 18ms</span>
+          </div>
+        </div>
+
+        <!-- Col 3 : Quartiers Couverts à Yaoundé -->
+        <div class="space-y-4 font-heading text-xs">
+          <div class="font-mono text-signal font-bold uppercase tracking-wider">// SECTEURS DESSERVIS</div>
+          <ul class="space-y-2 text-paper/70">
+            <li>Bastos &amp; Golf</li>
+            <li>Omnisports &amp; Essos</li>
+            <li>Nlongkak &amp; Tsinga</li>
+            <li>Mendong &amp; Biyem-Assi</li>
+            <li>Poste Centrale &amp; Hippodrome</li>
+            <li>Odza &amp; Mvan</li>
+          </ul>
+        </div>
+
+        <!-- Col 4 : Liens de Navigation -->
+        <div class="space-y-4 font-heading text-xs">
+          <div class="font-mono text-signal font-bold uppercase tracking-wider">// NAVIGATION</div>
+          <ul class="space-y-2 text-paper/70">
+            <li><a href="#hero" class="hover:text-signal transition-colors">Accueil // Vue Globale</a></li>
+            <li><a href="#fonctionnalites" class="hover:text-signal transition-colors">Télémétrie Radar</a></li>
+            <li><a href="#manifeste" class="hover:text-signal transition-colors">Manifeste Brutaliste</a></li>
+            <li><a href="#protocole" class="hover:text-signal transition-colors">Protocole d'Exécution</a></li>
+            <li><a href="#tarifs" class="hover:text-signal transition-colors">Grille Tarifs &amp; Pass</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 5 : Contact Opérationnel -->
+        <div class="space-y-4 font-heading text-xs">
+          <div class="font-mono text-signal font-bold uppercase tracking-wider">// DISPATCH DIRECT</div>
+          <p class="text-paper/70">Yaoundé, Région du Centre, Cameroun</p>
+          <div class="space-y-1 font-mono text-xs">
+            <a href="tel:+237699000000" class="text-paper hover:text-signal transition-colors block">+237 699 00 00 00</a>
+            <a href="https://wa.me/237699000000" target="_blank" class="text-emerald-400 hover:underline block">WhatsApp Opérations 24/7</a>
+          </div>
+          <button onclick="openOrderModal()" class="mt-2 w-full py-2 px-3 rounded-[1.5rem] bg-signal/20 text-signal border border-signal/40 font-mono text-[10px] font-bold uppercase hover:bg-signal hover:text-white transition-all">
+            Créer un Ordre Direct
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-paper/50">
+        <div>&copy; 2026 iziLivraison Yaoundé. Tous droits réservés.</div>
+        <div class="flex items-center gap-6">
+          <span class="hover:text-paper cursor-pointer">Conditions Générales</span>
+          <span class="hover:text-paper cursor-pointer">Protocole Confidentialité</span>
+          <span class="hover:text-paper cursor-pointer">API Développeur</span>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- MODAL DE COMMANDE INTERACTIVE EN 45 MIN -->
+  <div id="orderModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-[#F5F3EE] text-ink rounded-[2.5rem] border border-black/15 shadow-2xl w-full max-w-lg p-6 sm:p-8 space-y-6 transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto" id="orderModalContent">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-black/10">
+        <div class="space-y-0.5">
+          <div class="font-mono text-signal text-xs font-bold uppercase">// NOUVEL ORDRE RAPIDE</div>
+          <h3 class="font-heading font-extrabold text-2xl uppercase tracking-tight text-ink">Commander une livraison</h3>
+        </div>
+        <button onclick="closeOrderModal()" class="w-8 h-8 rounded-full bg-black/5 hover:bg-black/10 flex items-center justify-center text-ink transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="orderForm" onsubmit="handleOrderSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block font-mono text-xs uppercase font-bold text-ink/70 mb-1">Quartier de départ (Enlèvement)</label>
+          <select id="startLoc" class="w-full px-4 py-3 rounded-2xl bg-white border border-black/15 font-heading text-sm text-ink focus:outline-none focus:border-signal" required onchange="calculateEstimate()">
+            <option value="Bastos">Bastos</option>
+            <option value="Omnisports">Omnisports</option>
+            <option value="Tsinga">Tsinga</option>
+            <option value="Poste Centrale">Poste Centrale</option>
+            <option value="Mendong">Mendong</option>
+            <option value="Biyem-Assi">Biyem-Assi</option>
+            <option value="Essos">Essos</option>
+            <option value="Odza">Odza</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-mono text-xs uppercase font-bold text-ink/70 mb-1">Quartier d'arrivée (Destination)</label>
+          <select id="endLoc" class="w-full px-4 py-3 rounded-2xl bg-white border border-black/15 font-heading text-sm text-ink focus:outline-none focus:border-signal" required onchange="calculateEstimate()">
+            <option value="Omnisports">Omnisports</option>
+            <option value="Bastos">Bastos</option>
+            <option value="Tsinga">Tsinga</option>
+            <option value="Mendong">Mendong</option>
+            <option value="Biyem-Assi">Biyem-Assi</option>
+            <option value="Essos">Essos</option>
+            <option value="Poste Centrale">Poste Centrale</option>
+            <option value="Odza">Odza</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-mono text-xs uppercase font-bold text-ink/70 mb-1">Type de marchandise</label>
+          <select id="parcelType" class="w-full px-4 py-3 rounded-2xl bg-white border border-black/15 font-heading text-sm text-ink focus:outline-none focus:border-signal">
+            <option value="Document urgent / Plis scellé">Document urgent / Plis scellé</option>
+            <option value="Colis E-commerce (Vêtements, Chaussures)">Colis E-commerce (Vêtements, Chaussures)</option>
+            <option value="Appareil électronique / Smartphone">Appareil électronique / Smartphone</option>
+            <option value="Repas / Nourriture conditionnée">Repas / Nourriture conditionnée</option>
+            <option value="Pharmacie / Médicament">Pharmacie / Médicament</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-mono text-xs uppercase font-bold text-ink/70 mb-1">Mode de règlement</label>
+          <div class="grid grid-cols-3 gap-2">
+            <label class="cursor-pointer border border-black/15 rounded-xl p-2.5 text-center has-[:checked]:border-signal has-[:checked]:bg-signal/10 transition-all">
+              <input type="radio" name="payment" value="MTN MoMo" checked class="sr-only">
+              <span class="block font-mono text-[11px] font-bold">MTN MoMo</span>
+            </label>
+            <label class="cursor-pointer border border-black/15 rounded-xl p-2.5 text-center has-[:checked]:border-signal has-[:checked]:bg-signal/10 transition-all">
+              <input type="radio" name="payment" value="Orange Money" class="sr-only">
+              <span class="block font-mono text-[11px] font-bold">Orange</span>
+            </label>
+            <label class="cursor-pointer border border-black/15 rounded-xl p-2.5 text-center has-[:checked]:border-signal has-[:checked]:bg-signal/10 transition-all">
+              <input type="radio" name="payment" value="Cash à livraison" class="sr-only">
+              <span class="block font-mono text-[11px] font-bold">Cash</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Calcul en direct de l'estimation -->
+        <div class="bg-black/5 rounded-2xl p-4 border border-black/10 flex items-center justify-between font-mono text-xs">
+          <div>
+            <div class="text-ink/60 text-[10px] uppercase">Délai estimé</div>
+            <div class="text-signal font-bold text-base font-heading">35 - 45 min chrono</div>
+          </div>
+          <div class="text-right">
+            <div class="text-ink/60 text-[10px] uppercase">Tarif calculé</div>
+            <div class="text-ink font-bold text-xl font-heading" id="modalPrice">2 500 FCFA</div>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full btn-magnetic relative overflow-hidden py-4 rounded-[2rem] bg-signal text-white font-heading font-bold text-sm uppercase tracking-wider text-center group shadow-xl">
+          <span class="btn-bg bg-[#CC2F23]"></span>
+          <span class="relative z-10 flex items-center justify-center gap-2">
+            <span>Confirmer &amp; Envoyer sur WhatsApp</span>
+            <i data-lucide="send" class="w-4 h-4"></i>
+          </span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Fichier de Logique Applicative & Animations GSAP -->
+  <script src="app.js"></script>
+</body>
+</html>
