@@ -378,14 +378,14 @@ function initRadarCanvas() {
       }
 
       // Point central
-      ctx.fillStyle = "#E63B2E";
+      ctx.fillStyle = "#10B981";
       ctx.beginPath();
       ctx.arc(nx, ny, 3.5, 0, Math.PI * 2);
       ctx.fill();
 
       // Onde de pulse
       if (node.pulse > 0) {
-        ctx.strokeStyle = `rgba(230, 59, 46, ${node.pulse})`;
+        ctx.strokeStyle = `rgba(16, 185, 129, ${node.pulse})`;
         ctx.beginPath();
         ctx.arc(nx, ny, 4 + (1 - node.pulse) * 14, 0, Math.PI * 2);
         ctx.stroke();
